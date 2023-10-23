@@ -6,7 +6,7 @@ CREATE TABLE `products` (
   `name` varchar(100) NOT NULL,
   `description` varchar(100) DEFAULT NULL,
   `price` double DEFAULT NULL,
-  `url` varchar(100) DEFAULT NULL,
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `product_reviews` (
   `review_user_name` varchar(100) DEFAULT NULL,
   `like_count` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `product_reviews_UN` (`product_id`,`source`,`timestamp`,`account_id`,`review_user_id`),
+  UNIQUE KEY `product_reviews_UN` (`product_id`,`source`,`timestamp`,`account_id`,`review_user_id`,`text`(255)),
   CONSTRAINT `product_reviews_FK` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
