@@ -20,7 +20,7 @@ _logger = logging.getLogger("app")
 def get_products_from_db(engine):
     """Function printing python version."""
     with Session(engine) as session:
-        products = session.query(Product).all()
+        products = session.query(Product).filter(Product.enabled == 1).all()
         # session.commit()
     return products
 

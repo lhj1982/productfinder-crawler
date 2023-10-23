@@ -38,6 +38,7 @@ class Product(Base):
                                                  nullable=True)
     reviews: Mapped[List["ProductReview"]] = relationship(
         back_populates="product")
+    enabled: Mapped[int] = mapped_column(Integer)
 
     def __repr__(self):
         return f'<Product {self.stylecolor}>'

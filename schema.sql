@@ -33,3 +33,16 @@ CREATE TABLE `product_reviews` (
   UNIQUE KEY `product_reviews_UN` (`product_id`,`source`,`timestamp`,`account_id`,`review_user_id`),
   CONSTRAINT `product_reviews_FK` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=147 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE launch.product_prices (
+	id BIGINT auto_increment NOT NULL,
+	product_id BIGINT NOT NULL,
+	check_date DATETIME NOT NULL,
+	price DOUBLE NULL,
+	CONSTRAINT product_prices_PK PRIMARY KEY (id),
+	CONSTRAINT product_prices_UN UNIQUE KEY (product_id,check_date)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
