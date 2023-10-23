@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from .models import Product
 # from sqlalchemy import select
 from .weibo_handler import get_product_reviews
+from .shihuo_handler import add_comment_for_product
 
 # log = logging.getLogger("myapp")
 
@@ -32,6 +33,7 @@ def update_product_reviews(engine):
         stylecolor = product.stylecolor
         _logger.info("Crawling content for %s ... ", stylecolor)
         product_reviews = get_product_reviews(engine, product)
+        add_comment_for_product(engine, product)
         # search_url = "https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D1%26q%3D" + \
         #     stylecolor + "&page_type=searchall"
         # response = requests.get(search_url)
