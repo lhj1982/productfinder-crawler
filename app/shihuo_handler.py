@@ -95,7 +95,8 @@ def check_product(search_product):
         "https://sh-gateway.shihuo.cn/v4/services/sh-goodsapi/public/showcase/attr",
         params={
             "goods_id": search_product['goods_id'],
-            "style_id": search_product['style_id']
+            "style_id": search_product['style_id'],
+            "v": "7.46.1"
         },
         headers={
             'platform': 'ios',
