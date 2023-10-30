@@ -1,19 +1,11 @@
 """Application handler."""
 import logging
-# import requests
-from flask import request, render_template, make_response
-# from datetime import datetime as dt
-# from flask import current_app as app
 from sqlalchemy.orm import Session
 from .models import Product
-# from sqlalchemy import select
+from .models import ProductCrawlRecord
 from .weibo_handler import get_product_reviews
 from .shihuo_handler import add_comment_for_product
-
-# log = logging.getLogger("myapp")
-
-# logging.basicConfig(level=logging.INFO,
-# format="%(levelname)s | %(asctime)s | %(message)s")
+from datetime import datetime, time
 
 _logger = logging.getLogger("app")
 
@@ -22,23 +14,62 @@ def get_products_from_db(engine):
     """Function printing python version."""
     with Session(engine) as session:
         products = session.query(Product).filter(Product.enabled == 1).all()
-        # session.commit()
     return products
 
 
 def update_product_reviews(engine):
+    current = datetime.combine(datetime.now().date(), time.min)
     products = get_products_from_db(engine)
     _logger.info("Found products %s", products)
     for product in products:
-        stylecolor = product.stylecolor
-        _logger.info("Crawling content for %s ... ", stylecolor)
-        product_reviews = get_product_reviews(engine, product)
-        add_comment_for_product(engine, product)
-        # search_url = "https://m.weibo.cn/api/container/getIndex?containerid=100103type%3D1%26q%3D" + \
-        #     stylecolor + "&page_type=searchall"
-        # response = requests.get(search_url)
-        # response_obj = response.json()
-        # print(response_obj.keys())
-        # for card in response_obj['data']['cards']:
-        #     anchor_id = card['anchorId']
-        #     print(anchor_id)
+        _logger.info("Crawling content for %s ... ", product.stylecolor)
+        weibo_crawl(engine, product, current)
+        shihuo_crawl(engine, product, current)
+
+
+def weibo_crawl(engine, product, current):
+    platform = 'weibo'
+    record = get_crawl_record(engine, product, current, platform)
+    if record is None:
+        try:
+            get_product_reviews(engine, product)
+            add_crawl_record(engine, product, current, platform)
+        except Exception as e:
+            _logger.error('Error when crawl %s, platform: %s, time: %s, error: %s', product.stylecolor, platform,
+                          current, e)
+    else:
+        _logger.info(
+            'skipping this crawling process for %s, because the data has already been crawled! platform: %s, time: %s',
+            product.stylecolor, platform, current)
+
+
+def shihuo_crawl(engine, product, current):
+    platform = 'shihuo'
+    record = get_crawl_record(engine, product, current, platform)
+    if record is None:
+        try:
+            add_comment_for_product(engine, product)
+            add_crawl_record(engine, product, current, platform)
+        except Exception as e:
+            _logger.error('Error when crawl %s, platform: %s, time: %s, error: %s', product.stylecolor, platform,
+                          current, e)
+    else:
+        _logger.info(
+            'skipping this crawling process for %s, because the data has already been crawled! platform: %s, time: %s',
+            product.stylecolor, platform, current)
+
+
+def get_crawl_record(engine, product, current, platform):
+    with Session(engine) as session:
+        record = session.query(ProductCrawlRecord).filter(ProductCrawlRecord.product_id == product.id,
+                                                          ProductCrawlRecord.platform == platform,
+                                                          ProductCrawlRecord.crawl_time == current).first()
+    return record
+
+
+def add_crawl_record(engine, product, current, platform):
+    record = ProductCrawlRecord(product_id=product.id, stylecolor=product.stylecolor, platform=platform,
+                                crawl_time=current)
+    with Session(engine) as session:
+        session.add(record)
+        session.commit()

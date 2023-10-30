@@ -63,3 +63,18 @@ class ProductReview(Base):
 
     def __repr__(self):
         return f'<ProductReview {self.product}, {self.account_id}, {self.source}>'
+
+class ProductCrawlRecord(Base):
+    """Data model for crawl record."""
+
+    __tablename__ = 'product_crawl_record'
+    id: Mapped[int] = mapped_column(Integer,primary_key=True)
+    product_id: Mapped[int] = mapped_column(Integer)
+    stylecolor: Mapped[str] = mapped_column(String(100))
+    platform: Mapped[str] = mapped_column(String(100))
+    crawl_time: Mapped[DateTime] = mapped_column(DateTime)
+
+    def __repr__(self):
+        return f'<ProductCrawlRecord {self.product_id}, {self.stylecolor}, {self.platform}, {self.crawl_time}>'
+
+

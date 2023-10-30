@@ -68,10 +68,10 @@ def get_product_review_by_account_id(account_id, product):
                  account_id, stylecolor)
     acount_detail_url = f"https://m.weibo.cn/comments/hotflow?id={account_id}&mid={account_id}&max_id_type=0"
     product_reviews = []
+    response = requests.get(acount_detail_url, timeout=10)
+    response_obj = response.json()
+    status = response_obj['ok']
     try:
-        response = requests.get(acount_detail_url, timeout=10)
-        response_obj = response.json()
-        status = response_obj['ok']
         if status == 1:
             # print(response_obj['data']['data'])
             for data in response_obj['data']['data']:
