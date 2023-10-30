@@ -56,7 +56,7 @@ CREATE TABLE product_crawl_record
     stylecolor varchar(64)  not null,
     platform   varchar(255) not null,
     crawl_time DATETIME DEFAULT NULL,
-    CONSTRAINT product_crawl_record_PK PRIMARY KEY (id),
+    CONSTRAINT product_crawl_record_PK PRIMARY KEY (id)
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
