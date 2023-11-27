@@ -11,6 +11,7 @@ CREATE TABLE `products` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
   `enabled` tinyint(4) DEFAULT '0',
+  `rating` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `products_UN` (`stylecolor`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

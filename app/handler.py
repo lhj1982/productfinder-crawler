@@ -73,3 +73,60 @@ def add_crawl_record(engine, product, current, platform):
     with Session(engine) as session:
         session.add(record)
         session.commit()
+
+
+def update_product_rating(engine):
+    """Update product rating"""
+    rule_weights = {
+        1: 0.9,  # price
+        2: 0.1  # reviews
+    }
+    with Session(engine) as session:
+        products = session.query(Product).filter(Product.enabled == 1).all()
+        for product in products:
+            rating = calc_rating(product, rule_weights)
+            product.rating = rating
+            # print(product)
+        session.commit()
+
+
+def calc_rating(product, rule_weights):
+    from operator import itemgetter
+    rating = 0
+    price_score = 0
+    review_score = 0
+    for rule in rule_weights:
+        weight = rule_weights[rule]
+        if rule == 1:
+            arr = []
+            for price in product.prices:
+                if price.price is not None:
+                    arr.append(
+                        {"product_id": price.product_id, "price": price.price, "check_date": price.check_date})
+
+            sorted_arr = sorted(
+                arr, key=itemgetter('check_date'), reverse=True)
+            if sorted_arr:  # not empty list
+                highest_price_obj = sorted_arr[0]
+
+                market_price = highest_price_obj['price']
+                original_price = product.price
+
+                # if product.id == 5:
+                #     print('==============')
+                #     print(highest_price_obj)
+                #     print(original_price)
+                price_score = market_price/(market_price+original_price)*100
+                rating += price_score * weight
+
+        elif rule == 2:
+            count = len(product.reviews)
+            if count > 0 and count <= 20:
+                review_score = 50
+            elif count > 20 and count <= 100:
+                review_score = 80
+            elif count > 100:
+                review_score = 100
+            rating += review_score * weight
+    print(rating)
+    return rating

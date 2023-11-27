@@ -38,10 +38,13 @@ class Product(Base):
                                                  nullable=True)
     reviews: Mapped[List["ProductReview"]] = relationship(
         back_populates="product")
+    prices: Mapped[List["ProductPrice"]] = relationship(
+        back_populates="product")
     enabled: Mapped[int] = mapped_column(Integer)
+    rating: Mapped[int] = mapped_column(Integer)
 
     def __repr__(self):
-        return f'<Product {self.stylecolor}>'
+        return f'<Product {self.stylecolor}, {self.rating}>'
 
 
 class ProductReview(Base):
@@ -64,11 +67,12 @@ class ProductReview(Base):
     def __repr__(self):
         return f'<ProductReview {self.product}, {self.account_id}, {self.source}>'
 
+
 class ProductCrawlRecord(Base):
     """Data model for crawl record."""
 
     __tablename__ = 'product_crawl_record'
-    id: Mapped[int] = mapped_column(Integer,primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     product_id: Mapped[int] = mapped_column(Integer)
     stylecolor: Mapped[str] = mapped_column(String(100))
     platform: Mapped[str] = mapped_column(String(100))
@@ -78,3 +82,15 @@ class ProductCrawlRecord(Base):
         return f'<ProductCrawlRecord {self.product_id}, {self.stylecolor}, {self.platform}, {self.crawl_time}>'
 
 
+class ProductPrice(Base):
+    """Data model for product prices."""
+
+    __tablename__ = 'product_prices'
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    product: Mapped["Product"] = relationship(back_populates="prices")
+    price: Mapped[float] = mapped_column(Float)
+    check_date: Mapped[DateTime] = mapped_column(DateTime)
+
+    def __repr__(self):
+        return f'<ProductPrice {self.product_id}, {self.price}, {self.check_date}>'

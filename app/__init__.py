@@ -32,12 +32,30 @@ def create_app():
         'SQLALCHEMY_DATABASE_URI'), echo=True)
 
     _init_logger()
-    logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
+    # logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
 
     with app.app_context():
         from . import handler
         # products = handler.get_products_from_db()
         handler.update_product_reviews(engine)
+        # db.create_all()  # Create database tables for our data models
+
+        return app
+
+
+def calc_rating():
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object('config.Config')
+
+    global engine
+    engine = create_engine(app.config.get(
+        'SQLALCHEMY_DATABASE_URI'), echo=True)
+
+    _init_logger()
+    with app.app_context():
+        from . import handler
+        # products = handler.get_products_from_db()
+        handler.update_product_rating(engine)
         # db.create_all()  # Create database tables for our data models
 
         return app
