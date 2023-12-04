@@ -26,7 +26,7 @@ def get_product_reviews(engine, product):
             _logger.warning('Error when updating db, error: %s', e)
         # product_reviews.append(product_review)
 
-        sleep(3)  # wait 3 seconds between requests
+        sleep(1)  # wait 3 seconds between requests
     return product_reviews
 
 
