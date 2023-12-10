@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  The IAM role and policies under which the product catalog insights frontend 
+  executes in the test environment. Stack name - launch-product-catalog-insights-frontend-iam-resources
+Parameters:
+  Env:
+    Type: String
+    Default: chinatest
+    AllowedValues:
+      - chinatest
+      - chinaprod
+    Description: Enter the environment name where these resources will be created.
+  VpcId:
+    Type: String
+  
+Mappings:
+  EnvMap:
+    chinatest:
+      CloudWatchPublishPolicy: Cloudwatch-Add-Metrics-All
+    chinaprod:
+      CloudWatchPublishPolicy: Nike-Publish-Metrics-Data-Over-HTTPS
+  RegionMap:
+    aws:
+      Service: ec2.amazonaws.com
+    aws-cn:
+      Service: ec2.amazonaws.com.cn
+  AccountMap:
+    "734176943427":
+      OscarApiArn: "arn:aws-cn:execute-api:*:693031048477:*"
+    "734147128161":
+      OscarApiArn: "arn:aws-cn:execute-api:*:180957259698:*"
+  ResourceTagMap:
+    NikeStandardTags:
+      "application": "product-catalog-insights-frontend"
+      "department": "platform engineering - launch"
+      "domain": "launch execution"
+      "owner": "frank.zhao@nike.com"
+      "distributionlist": "Lst-digitaltech.LaunchServices@nike.com"
+Resources:
+  ProductCatalogInsightsFrontendInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: launch.product-catalog-insights-frontend
+      Roles:
+        - Ref: ProductCatalogInsightsFrontendRole
+  ProductCatalogInsightsFrontendRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - !FindInMap [RegionMap, !Ref "AWS::Partition", Service]
+      ManagedPolicyArns:
+        - !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/Nike-S3-KMS-Public-Keys-Policy'
+        - Fn::Join:
+           -  ''
+           -  - 'arn:'
+              - Ref: AWS::Partition
+              - ":iam::"
+              - Ref: AWS::AccountId
+              - ":policy/"
+              - !FindInMap [EnvMap, !Ref Env, CloudWatchPublishPolicy]
+        - !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/Nike-Cerberus-Allow-KMS-Decrypt'
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      RoleName: launch.product-catalog-insights-frontend
+      Tags:
+        - Key: "nike-application"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, application ]
+        - Key: "nike-department"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, department ]
+        - Key: "nike-domain"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, domain ]
+        - Key: "nike-environment"
+          Value: !Ref Env
+        - Key: "nike-owner"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, owner ]
+        - Key: "nike-distributionlist"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, distributionlist ]
+    
+  ProductCatalogInsightsFrontendSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: product-catalog-insights-frontend
+      GroupDescription: product-catalog-insights-frontend
+      SecurityGroupEgress: 
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: -1
+      SecurityGroupIngress: 
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+        - CidrIp: 58.220.95.54/32
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+      Tags:
+        - Key: "nike-application"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, application ]
+        - Key: "nike-department"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, department ]
+        - Key: "nike-domain"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, domain ]
+        - Key: "nike-environment"
+          Value: !Ref Env
+        - Key: "nike-owner"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, owner ]
+        - Key: "nike-distributionlist"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, distributionlist ]
+      VpcId: !Ref VpcId

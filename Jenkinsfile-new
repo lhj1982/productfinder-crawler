@@ -1,0 +1,81 @@
+@Library(['cop-pipeline-bootstrap']) _
+String pipelineVersion = (env.BRANCH_NAME && !(env.BRANCH_NAME).equals('main') && !(env.BRANCH_NAME).contains('PR-')) ? env.BRANCH_NAME : 'regression/candidate'
+loadPipelines(pipelineVersion)
+
+def config = [
+    usePraDispatch: false,
+    tags: [
+        'Name': 'product-catalog-insights-frontend',
+        'costcenter': '104420',
+        'classification': 'Bronze',
+        'nike-distributionlist': 'lst-gc-cdn-antibots.admin@nike.com',
+        'nike-owner': 'frank.zhao@nike.com',
+        'nike-application': 'product-catalog-insights-frontend',
+        'nike-department': 'Web Eng - nike.com Cloud Capability',
+        'nike-domain': 'gc-cdn-antibots',
+        'PartOfPipelinesRegression' : 'YES'
+    ],
+    buildFlow: [
+            PULL_REQUEST : [],
+            DEVELOPMENT : [],
+            RELEASE : [],
+    ],
+    branchMatcher: [RELEASE: ['main'], DEVELOPMENT: ['^(?!main$).*$']],
+
+    deploymentEnvironment: [
+        chinatest: [
+            deployFlow: [
+                PULL_REQUEST : ['Validate'],
+                DEVELOPMENT: ['Deploy Infrastructure'],
+                RELEASE: ['Deploy Infrastructure'],
+            ],
+            aws: [
+                awsRole: "launch-pipeline-deploy",
+                accountId: "734176943427",
+                region: "cn-northwest-1",
+            ],
+            cf: [
+                stackName: "product-catalog-insights-frontend-app",
+                templateFile: "cloudformation/product-catalog-insights-frontend-app.yaml",
+                parameters: [
+                    InstanceProfileArn: "arn:aws-cn:iam::734176943427:role/launch.product-catalog-insights-frontend",
+                    ImageId: "ami-0ef16a31c0725c7fb",
+                    InstanceType: "t3.micro",
+                    SecurityGroupIds: "sg-02a528cbf272abe21"
+                ],
+            ],
+            tags: [
+                'nike-environment': 'test',
+            ],
+        ],
+
+        chinaprod: [
+            deployFlow: [
+                PULL_REQUEST : ['Validate'],
+                WAFFLE_INFRASTRUCTURE: ['Archive Current State', 'Deploy Infrastructure'],
+            ],
+            aws: [
+                awsRole: "launch-pipeline-deploy",
+                accountId: "299281322080",
+                region: "cn-northwest-1",
+            ],
+            cf: [
+                stackName: "acid-cop-pipeline-cfpipeline-prod-infrastructure",
+                templateFile: "cfStackTest.json",
+                parameters: [
+                    AMI: "ami-0ef16a31c0725c7fb"
+                ],
+            ],
+            tags: [
+                'nike-environment': 'prod',
+            ],
+        ],
+    ],
+    // pra: [
+    //     sdbPath: "app/cdservice/cicduser",
+    //     userNameKey: "username",
+    //     passwordKey: "password",
+    // ],
+]
+
+cloudformationPipeline(config)

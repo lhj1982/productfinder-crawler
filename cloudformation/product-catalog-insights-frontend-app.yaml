@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  Parameters:
+    InstanceProfileArn: 
+      Type: String
+    ImageId:
+      Type: String
+    InstanceType:
+      Type: String
+      Default: t3.micro
+      AllowedValues:
+        - t3.micro
+        - t3.large
+        - t3.medium
+    SecurityGroupIds:
+      Type: String
+
+  MyLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: product-catalog-insights-frontend-template
+      LaunchTemplateData:
+        IamInstanceProfile: !Ref InstanceProfileArn
+        DisableApiTermination: true
+        ImageId: !Ref ImageId
+        InstanceType: !Ref InstanceType
+        SecurityGroupIds: 
+          !Split [",", !Ref SecurityGroupIds]
