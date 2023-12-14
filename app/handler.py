@@ -1,11 +1,13 @@
 """Application handler."""
 import logging
+import _thread
 from sqlalchemy.orm import Session
 from .models import Product
 from .models import ProductCrawlRecord
 from .weibo_handler import get_product_reviews
 from .shihuo_handler import add_comment_for_product
 from datetime import datetime, time
+
 
 _logger = logging.getLogger("app")
 
@@ -24,7 +26,7 @@ def update_product_reviews(engine):
     for product in products:
         _logger.info("Crawling content for %s ... ", product.stylecolor)
         weibo_crawl(engine, product, current)
-        shihuo_crawl(engine, product, current)
+        _thread.start_new_thread(shihuo_crawl, (engine, product, current))
 
 
 def weibo_crawl(engine, product, current):
