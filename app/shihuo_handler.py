@@ -22,7 +22,7 @@ def add_comment_for_product(engine, product):
                     session.commit()
             except Exception as e:
                 _logger.warning('Error when updating db, error: %s', e)
-            sleep(0.5)
+            sleep(1)
 
 
 def search_style_color(style_color):
@@ -76,15 +76,15 @@ def search_style_color(style_color):
     }
     if response.status_code == 200:
         response_json = response.json()
-        data = response_json['data']
+        data = response_json.get('data')
         if data is not None:
-            lists = data['lists']
+            lists = data.get('lists')
             if lists is not None and len(lists) > 0:
-                style_lists = lists[0]['style_lists']
+                style_lists = lists[0].get('style_lists')
                 if style_lists is not None and len(style_lists) > 0:
                     product = style_lists[0]
-                    search_product['goods_id'] = product['goods_id']
-                    search_product['style_id'] = product['style_id']
+                    search_product['goods_id'] = product.get('goods_id')
+                    search_product['style_id'] = product.get('style_id')
     else:
         _logger.error('search the product request error, style color: %s', style_color)
     return search_product
@@ -94,8 +94,8 @@ def check_product(search_product):
     response = requests.get(
         "https://sh-gateway.shihuo.cn/v4/services/sh-goodsapi/public/showcase/attr",
         params={
-            "goods_id": search_product['goods_id'],
-            "style_id": search_product['style_id'],
+            "goods_id": search_product.get('goods_id'),
+            "style_id": search_product.get('style_id'),
             "v": "7.46.1"
         },
         headers={
@@ -107,16 +107,16 @@ def check_product(search_product):
     check = False
     if response.status_code == 200:
         response_json = response.json()
-        data = response_json['data']
+        data = response_json.get('data')
         if data is not None:
-            list = data['list']
+            list = data.get('list')
             if list is not None and len(list) > 0:
                 style_color_data = list[0]
-                value = style_color_data['value']
+                value = style_color_data.get('value')
                 if value is not None and len(value) > 0:
-                    check = value[0].upper() == search_product['style_color']
+                    check = value[0].upper() == search_product.get('style_color')
     else:
-        _logger.error('check product request error, style color: %s', search_product['style_color'])
+        _logger.error('check product request error, style color: %s', search_product.get('style_color'))
     return check
 
 
@@ -124,8 +124,8 @@ def discussion_list(search_product):
     list = []
     for i in itertools.count():
         page = i + 1
-        request_lists = discussion_list_request(search_product['goods_id'], search_product['style_id'], page,
-                                                search_product['style_color'])
+        request_lists = discussion_list_request(search_product.get('goods_id'), search_product.get('style_id'), page,
+                                                search_product.get('style_color'))
         if request_lists is not None and len(request_lists) > 0:
             list += request_lists
         else:
@@ -150,9 +150,9 @@ def discussion_list_request(goods_id, style_id, page, style_color):
         })
     if response.status_code == 200:
         response_json = response.json()
-        data = response_json['data']
+        data = response_json.get('data')
         if data is not None:
-            return data['list']
+            return data.get('list')
     else:
         _logger.error('discussion list request error, style color: %s', style_color)
     return []
@@ -166,11 +166,11 @@ def discussion_detail(style_color, discussion_id):
         })
     if response.status_code == 200:
         response_json = response.json()
-        data = response_json['data']
+        data = response_json.get('data')
         if data is not None:
             list = data['list']
             if list is not None:
-                return list['data']
+                return list.get('data')
     else:
         _logger.error('discussion detail request error, style color: %s, id: %s', style_color, discussion_id)
     return None
@@ -179,19 +179,19 @@ def discussion_detail(style_color, discussion_id):
 def comment_list(discussion, product):
     product_id = product.id
     list = []
-    user_info = discussion['user_info']
+    user_info = discussion.get('user_info')
     account_id = ""
-    if user_info is not None and user_info['author_id'] is not None:
-        account_id = str(user_info['author_id'])
+    if user_info is not None and user_info.get('author_id') is not None:
+        account_id = str(user_info.get('author_id'))
     for i in itertools.count():
         page = i + 1
         request_lists = comment_list_request(discussion['id'], page, 10, product.stylecolor)
-        comment_lists = request_lists['comment']
+        comment_lists = request_lists.get('comment')
         if comment_lists is not None and len(comment_lists) > 0:
             for comment in comment_lists:
                 product_review = get_product_review_from_comment(product_id, account_id, comment)
                 list.append(product_review)
-                reply = comment['reply']
+                reply = comment.get('reply')
                 if reply is not None and len(reply) > 0:
                     for reply_comment in reply:
                         reply_review = get_product_review_from_comment(product_id, account_id, reply_comment)
@@ -220,7 +220,7 @@ def comment_list_request(discussion_id, page, page_size, style_color):
         })
     if response.status_code == 200:
         response_json = response.json()
-        return response_json['data']
+        return response_json.get('data')
     else:
         _logger.error('comment list request error, style color: %s, id: %s', style_color, discussion_id)
     return {}
