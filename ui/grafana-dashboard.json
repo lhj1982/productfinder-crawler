@@ -303,7 +303,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT url as 'image', stylecolor, name, price, FROM_UNIXTIME(UNIX_TIMESTAMP(start_time), '%Y-%m-%d %H:%i:%s') as start_time, rating\nFROM products \nWHERE stylecolor like \"%${stylecolor}%\"\nAND name like \"%${name}%\"\nORDER BY created_at DESC",
+          "rawSql": "SELECT url as 'image', stylecolor, name, price, FROM_UNIXTIME(UNIX_TIMESTAMP(release_date), '%Y-%m-%d') as release_date, rating\nFROM products \nWHERE stylecolor like \"%${stylecolor}%\"\nAND name like \"%${name}%\"\nORDER BY created_at DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -411,7 +411,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 4,
+        "w": 9,
         "x": 15,
         "y": 0
       },
@@ -443,7 +443,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT p.stylecolor, IF(pp.retailprice IS NOT NULL, pp.retailprice*$currency_rate, p.price) as original_price, pis.forecast as original_forecast \nFROM products as p \nLEFT JOIN product_prices as pp ON pp.product_id = p.id \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nLIMIT 50 ",
+          "rawSql": "SELECT p.stylecolor, p.price as original_price, pis.forecast as original_forecast, IF(pp.lastsaleprice IS NOT NULL, pp.lastsaleprice, pp.price) as sale_price, IF(pp.stockxlowestprice IS NULL, 0, pp.stockxlowestprice) as lowest_price, IF(pp.stockxhighestprice IS NULL, 0, pp.stockxhighestprice) as highest_price  \nFROM products as p \nLEFT JOIN product_prices as pp ON pp.product_id = p.id \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nLIMIT 50 ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -910,7 +910,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT pp.check_date, p.stylecolor, IF(pp.retailprice IS NOT NULL, pp.retailprice * $currency_rate, pp.price) as price FROM product_prices as pp\nINNER JOIN products as p ON p.id = pp.product_id\nWHERE $__timeFilter(pp.check_date) \nAND CASE \n  WHEN \"$stylecolor\" = \"\" THEN (select 1 ) \n  ELSE product_id = (select id from products WHERE stylecolor=\"$stylecolor\")\n  END\nGROUP BY pp.check_date, p.stylecolor\nORDER BY pp.check_date",
+          "rawSql": "SELECT pp.check_date, p.stylecolor, IF(pp.lastsaleprice IS NOT NULL, pp.lastsaleprice, pp.price) as price, (pp.retailprice*$currency_rate) as retailprice, pp.stockxlowestprice as lowestprice, pp.stockxhighestprice as highestprice FROM product_prices as pp\nINNER JOIN products as p ON p.id = pp.product_id\nWHERE $__timeFilter(pp.check_date) \nAND CASE \n  WHEN \"$stylecolor\" = \"\" THEN (select 1 ) \n  ELSE product_id = (select id from products WHERE stylecolor=\"$stylecolor\")\n  END\nGROUP BY pp.check_date, p.stylecolor\nORDER BY pp.check_date",
           "refId": "A",
           "sql": {
             "columns": [
@@ -957,8 +957,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1077,8 +1076,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1295,8 +1293,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1395,8 +1392,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1509,8 +1505,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1677,6 +1672,6 @@
   "timezone": "",
   "title": "Product Catalog Insights",
   "uid": "abab9674-38c1-4296-9ad3-962231e87dde",
-  "version": 14,
+  "version": 26,
   "weekStart": ""
 }

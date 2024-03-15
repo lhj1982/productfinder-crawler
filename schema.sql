@@ -10,6 +10,7 @@ CREATE TABLE `products` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL,
   `start_time` datetime DEFAULT NULL,
+  `release_time` datetime DEFAULT NULL,
   `enabled` tinyint(4) DEFAULT '0',
   `rating` int DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -43,10 +44,11 @@ CREATE TABLE launch.product_prices (
 	check_date DATETIME NOT NULL,
 	price DOUBLE NULL,
   retailprice DOUBLE NULL,
+  lastsaleprice DOUBLE NULL,
   stockxlowestprice DOUBLE NULL,
   stockxhighestprice DOUBLE NULL, 
 	CONSTRAINT product_prices_PK PRIMARY KEY (id),
-	CONSTRAINT product_prices_UN UNIQUE KEY (product_id,check_date, price, retailprice, stockxlowestprice, stockxhighestprice)
+	CONSTRAINT product_prices_UN UNIQUE KEY (product_id,check_date, price, lastsaleprice, retailprice, stockxlowestprice, stockxhighestprice)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
