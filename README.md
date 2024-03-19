@@ -15,8 +15,28 @@ or
 docker run -d --name=grafana -p 3000:3000 grafana/grafana
 ```
 
+### install grafana plugins
+Login to container and run the following command
+```
+docker exec -it grafana sh
+grafana-cli plugins install dalvany-image-panel
+```
+### Configuration
+
+#### Mysql
+
+* Create a read-only access user
+```sql
+CREATE USER 'user'@'%' IDENTIFIED BY 'secret';
+GRANT SELECT ON database_name.* TO 'user'@'%';
+FLUSH PRIVILEGES;
+```
+* Configure data source in grafana using the above user
+
 Connect local mysql in grafana
 Host is *host.docker.internal*
+
+
 
 ## Run
 
