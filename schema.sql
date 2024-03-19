@@ -48,7 +48,7 @@ CREATE TABLE launch.product_prices (
   stockxlowestprice DOUBLE NULL,
   stockxhighestprice DOUBLE NULL, 
 	CONSTRAINT product_prices_PK PRIMARY KEY (id),
-	CONSTRAINT product_prices_UN UNIQUE KEY (product_id,check_date, price, lastsaleprice, retailprice, stockxlowestprice, stockxhighestprice)
+	CONSTRAINT product_prices_UN UNIQUE KEY (product_id,check_date)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
