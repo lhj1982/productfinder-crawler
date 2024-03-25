@@ -1,4 +1,78 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_MYSQL",
+      "label": "mysql",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mysql",
+      "pluginName": "MySQL"
+    },
+    {
+      "name": "VAR_CURRENCY_RATE",
+      "type": "constant",
+      "label": "currency_rate",
+      "value": "7.18",
+      "description": ""
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "dalvany-image-panel",
+      "name": "Dynamic image panel",
+      "version": "3.0.0"
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "mysql",
+      "name": "MySQL",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -18,14 +92,14 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": null,
   "links": [],
   "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "gridPos": {
@@ -40,9 +114,9 @@
         "height": "75",
         "icon_field": "",
         "open_url": {
-          "base_url": "",
-          "enable": false,
-          "metric_field": "",
+          "base_url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=",
+          "enable": true,
+          "metric_field": "stylecolor",
           "open_in_tab": true,
           "suffix": ""
         },
@@ -76,9 +150,9 @@
           "transition": "Slide",
           "transition_duration": 1000
         },
-        "tooltip": false,
+        "tooltip": true,
         "tooltip_date_elapsed": false,
-        "tooltip_field": "",
+        "tooltip_field": "name",
         "tooltip_include_date": false,
         "tooltip_include_field": true,
         "underline": {
@@ -100,12 +174,12 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT url as 'image' \nFROM products \nWHERE stylecolor like \"%${stylecolor}%\"\nAND name like \"%${name}%\"\nORDER BY created_at DESC",
+          "rawSql": "SELECT IF(url = \"\", \"http://dummy-images.com/objects/dummy-200x200-ToyTruck.jpg\", url) AS 'image', stylecolor, name\nFROM products \nWHERE stylecolor like \"%${stylecolor}%\"\nAND name like \"%${name}%\"\nORDER BY created_at DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -156,7 +230,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "fieldConfig": {
@@ -337,7 +411,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -393,7 +467,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "fieldConfig": {
@@ -501,7 +575,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -558,7 +632,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "fieldConfig": {
@@ -641,7 +715,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -717,7 +791,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "fieldConfig": {
@@ -776,7 +850,7 @@
           "dataset": "product_catalog",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -809,7 +883,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "description": "",
       "fieldConfig": {
@@ -945,7 +1019,7 @@
           "dataset": "product_catalog",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -978,7 +1052,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1060,7 +1134,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1093,7 +1167,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1112,8 +1186,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1198,7 +1271,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1231,7 +1304,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1250,8 +1323,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1336,7 +1408,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1369,7 +1441,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1420,7 +1492,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1453,7 +1525,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1533,7 +1605,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1566,7 +1638,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1671,7 +1743,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1704,7 +1776,7 @@
     {
       "datasource": {
         "type": "mysql",
-        "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+        "uid": "${DS_MYSQL}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1759,7 +1831,7 @@
           "dataset": "launch",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1790,7 +1862,7 @@
           "dataset": "launch_bot_users",
           "datasource": {
             "type": "mysql",
-            "uid": "a6247b43-a541-408b-992f-2ceae413cac7"
+            "uid": "${DS_MYSQL}"
           },
           "editorMode": "code",
           "format": "table",
@@ -1828,7 +1900,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "",
           "value": ""
         },
@@ -1848,7 +1920,7 @@
       },
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "",
           "value": ""
         },
@@ -1869,9 +1941,21 @@
       {
         "hide": 2,
         "name": "currency_rate",
-        "query": "7.18",
+        "query": "${VAR_CURRENCY_RATE}",
         "skipUrlSync": false,
-        "type": "constant"
+        "type": "constant",
+        "current": {
+          "value": "${VAR_CURRENCY_RATE}",
+          "text": "${VAR_CURRENCY_RATE}",
+          "selected": false
+        },
+        "options": [
+          {
+            "value": "${VAR_CURRENCY_RATE}",
+            "text": "${VAR_CURRENCY_RATE}",
+            "selected": false
+          }
+        ]
       }
     ]
   },
@@ -1883,6 +1967,6 @@
   "timezone": "",
   "title": "Product Catalog Insights",
   "uid": "abab9674-38c1-4296-9ad3-962231e87dde",
-  "version": 38,
+  "version": 43,
   "weekStart": ""
 }
