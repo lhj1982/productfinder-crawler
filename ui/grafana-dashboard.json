@@ -40,7 +40,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.3.1"
+      "version": "10.4.1"
     },
     {
       "type": "datasource",
@@ -258,8 +258,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -381,6 +380,30 @@
                 ]
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "launched_cnt"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 128
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "release_date"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 113
+              }
+            ]
           }
         ]
       },
@@ -405,7 +428,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "launch",
@@ -416,7 +439,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT stylecolor, name, price, FROM_UNIXTIME(UNIX_TIMESTAMP(release_date), '%Y-%m-%d') as release_date, rating\nFROM products \nWHERE stylecolor like \"%${stylecolor}%\"\nAND name like \"%${name}%\"\nORDER BY created_at DESC",
+          "rawSql": "SELECT p.stylecolor, p.name, p.price, FROM_UNIXTIME(UNIX_TIMESTAMP(p.release_date), '%Y-%m-%d') as release_date, \n(SELECT count(*)  FROM product_internal_sales as pis WHERE pis.stylecolor = p.stylecolor) as launched_cnt, p.rating\nFROM products as p\nWHERE p.stylecolor like \"%${stylecolor}%\"\nAND p.name like \"%${name}%\"\nORDER BY p.created_at DESC",
           "refId": "A",
           "sql": {
             "columns": [
@@ -484,8 +507,7 @@
                 "value": null
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -569,7 +591,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "launch",
@@ -580,7 +602,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT p.stylecolor, max(p.price) as \"Retail Price\", max(pis.forecast) as \"Original Forecast\", \nIF(max(pp.lastsaleprice) IS NOT NULL, max(pp.lastsaleprice), max(pp.price)) as \"Sale Price\", \nIF(max(pp.stockxlowestprice) IS NULL, 0, max(pp.stockxlowestprice)) as \"Lowest Price\", \nIF(max(pp.stockxhighestprice) IS NULL, 0, max(pp.stockxhighestprice)) as \"Highest Price\"  \nFROM products as p \nLEFT JOIN product_prices as pp ON pp.product_id = p.id \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id, p.stylecolor\nLIMIT 50 ",
+          "rawSql": "SELECT p.stylecolor, p.price as \"Retail Price\", pis.forecast as \"Original Forecast\", \nIF(pp.lastsaleprice IS NOT NULL, pp.lastsaleprice, pp.price) as \"Sale Price\", \nIF(pp.stockxlowestprice IS NULL, 0, pp.stockxlowestprice) as \"Lowest Price\", \nIF(pp.stockxhighestprice IS NULL, 0, pp.stockxhighestprice) as \"Highest Price\"  \nFROM products as p \nLEFT JOIN product_prices as pp ON pp.product_id = p.id \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nORDER BY pp.check_date DESC\n-- GROUP BY pis.launch_id, p.stylecolor\nLIMIT 1",
           "refId": "A",
           "sql": {
             "columns": [
@@ -626,7 +648,6 @@
         }
       ],
       "title": "Quick Facts",
-      "transformations": [],
       "type": "stat"
     },
     {
@@ -675,8 +696,7 @@
                 "value": 30
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -816,8 +836,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -844,7 +863,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "product_catalog",
@@ -915,8 +934,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -1013,7 +1031,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "product_catalog",
@@ -1104,8 +1122,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1186,7 +1203,8 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "orange",
@@ -1197,8 +1215,7 @@
                 "value": 85
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -1265,7 +1282,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "launch",
@@ -1323,7 +1340,8 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "orange",
@@ -1334,8 +1352,7 @@
                 "value": 85
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -1402,7 +1419,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "10.4.1",
       "targets": [
         {
           "dataset": "launch",
@@ -1455,8 +1472,7 @@
               "viz": false
             }
           },
-          "mappings": [],
-          "unitScale": true
+          "mappings": []
         },
         "overrides": []
       },
@@ -1565,8 +1581,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1967,6 +1982,6 @@
   "timezone": "",
   "title": "Product Catalog Insights",
   "uid": "abab9674-38c1-4296-9ad3-962231e87dde",
-  "version": 43,
+  "version": 6,
   "weekStart": ""
 }

@@ -102,16 +102,18 @@ def calc_rating(product, rule_weights):
         if rule == 1:
             arr = []
             for price in product.prices:
-                if price.price is not None:
+                if price.price is not None or price.lastsaleprice is not None:
                     arr.append(
-                        {"product_id": price.product_id, "price": price.price, "check_date": price.check_date})
+                        {"product_id": price.product_id, "price": price.price, 'lastsaleprice': price.lastsaleprice, "check_date": price.check_date})
 
             sorted_arr = sorted(
                 arr, key=itemgetter('check_date'), reverse=True)
             if sorted_arr:  # not empty list
                 highest_price_obj = sorted_arr[0]
-
-                market_price = highest_price_obj['price']
+                if highest_price_obj['price'] is not None:
+                    market_price = highest_price_obj['price']
+                else:
+                    market_price = highest_price_obj['lastsaleprice']
                 original_price = product.price
 
                 # if product.id == 5:

@@ -36,6 +36,8 @@ class Product(Base):
     created_at: Mapped[DateTime] = mapped_column(DateTime, index=False,
                                                  unique=False,
                                                  nullable=True)
+    start_time: Mapped[DateTime] = mapped_column(DateTime, index=False, unique=False, nullable=True)
+    release_date: Mapped[DateTime] = mapped_column(DateTime, index=False, unique=False, nullable=True)
     reviews: Mapped[List["ProductReview"]] = relationship(
         back_populates="product")
     prices: Mapped[List["ProductPrice"]] = relationship(
@@ -90,7 +92,11 @@ class ProductPrice(Base):
     product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
     product: Mapped["Product"] = relationship(back_populates="prices")
     price: Mapped[float] = mapped_column(Float)
+    retailprice: Mapped[float] = mapped_column(Float)
+    lastsaleprice: Mapped[float] = mapped_column(Float)
+    stockxlowestprice: Mapped[float] = mapped_column(Float)
+    stockxhighestprice: Mapped[float] = mapped_column(Float)
     check_date: Mapped[DateTime] = mapped_column(DateTime)
 
     def __repr__(self):
-        return f'<ProductPrice {self.product_id}, {self.price}, {self.check_date}>'
+        return f'<ProductPrice {self.product_id}, {self.price}, {self.lastsaleprice}, {self.check_date}>'
