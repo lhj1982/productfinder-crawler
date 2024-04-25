@@ -3,6 +3,7 @@ from flask import Flask
 from sqlalchemy import create_engine
 import logging
 import sys
+from app import job
 
 # db = SQLAlchemy()
 
@@ -32,8 +33,8 @@ def create_app():
         'SQLALCHEMY_DATABASE_URI'), echo=True)
 
     _init_logger()
+    job.register_jobs(app, engine)
     # logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
-
     with app.app_context():
         from . import handler
         # products = handler.get_products_from_db()
