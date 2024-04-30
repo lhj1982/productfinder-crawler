@@ -3,7 +3,7 @@ from flask import Flask
 from sqlalchemy import create_engine
 import logging
 import sys
-from app import job
+# from app import job
 
 # db = SQLAlchemy()
 
@@ -23,7 +23,7 @@ def _init_logger():  # Create a logger named ‘app’
     # logger.addHandler(handler)
 
 
-def create_app():
+def update_reviews():
     """Construct the core application."""
     app = Flask(__name__, instance_relative_config=False)
     app.config.from_object('config.Config')
@@ -33,7 +33,7 @@ def create_app():
         'SQLALCHEMY_DATABASE_URI'), echo=True)
 
     _init_logger()
-    job.register_jobs(app, engine)
+    # job.register_jobs(app, engine)
     # logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
     with app.app_context():
         from . import handler
@@ -59,4 +59,18 @@ def calc_rating():
         handler.update_product_rating(engine)
         # db.create_all()  # Create database tables for our data models
 
+        return app
+
+def update_prices():
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object('config.Config')
+
+    global engine
+    engine = create_engine(app.config.get(
+        'SQLALCHEMY_DATABASE_URI'), echo=True)
+
+    _init_logger()
+    with app.app_context():
+        from . import handler
+        handler.update_prices(engine)
         return app

@@ -23,11 +23,47 @@ dockerPushPipeline([
         PULL_REQUEST: [],
         'Publish': ['Build Docker Image'],
     ],
-    branchMatcher: ['Publish': ['main']],
-    notify: [
-        slack: [
-            onCondition: ['Build Start', 'Success', 'Unstable', 'Failure', 'Aborted'],
-            channel: '#webb-portal-deploy'
+    branchMatcher: [
+        RELEASE: ['main'],
+        DEVELOPMENT: ['^(?!main$).*$']
+    ],
+    build: [
+        cmd: 'python install -r requirements.txt'
+    ],
+    application: [
+        name      : appName,
+        group     : 'test',
+        version   : '1.0',
+        teamPrefix: 'test',
+    ],
+    package: [
+       description: 'transform productfinder-crawler',
+       version: '1.0',
+       packageName: appName,
+       priority: 'required',
+       transformations: [
+        [from: 'app', into: '/opt/pyth/crawler/app'],
+        [from: 'app.py', into:'/opt/pyth/crawler'],
+        [from: 'config.py', into: '/opt/pyth/crawler'],
+        [from: 'db.py', into: '/opt/pyth/crawler'],
+        [from: 'rating_calc.py', into: '/opt/pyth/crawler'],
+        [from: 'weibo.py', into: '/opt/pyth/crawler'],
+        [from: 'update_reviews.py', into: '/opt/pyth/crawler'],
+        [from: 'update_prices.py', into: '/opt/pyth/crawler'],
+        [from: 'requirements.txt', into: '/opt/pyth/crawler']
+       ],
+       user: 'pyth',
+    ],
+    smartBake: [
+        chinaBakery: [
+            agentLabel: 'china',
+            accountId: '734176943427',
+            awsRole: 'arn:aws-cn:iam::734176943427:role/launch-productfinder-bmx-deploy-role',
+            region: 'cn-northwest-1',
+            vpcId: 'vpc-069713cbc0909398d',
+            subnets: ['subnet-02a00bec41615cf0b'],
+            securityGroupName: 'CITBakingSg',
+            amiSelection: ['osversion':'2004', 'quarter': '3.0', 'weeksback': ''],
         ]
     ],
     imageName: 'launch/product-catalog-insights-frontend',
