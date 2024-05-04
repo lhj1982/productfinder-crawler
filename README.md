@@ -58,3 +58,18 @@ python update_prices.py
 ```
 python rating_calc.py
 ```
+
+### On EC2
+
+1. build
+```
+bash build.sh
+```
+2. create a crontab
+```
+crontab -e
+
+add cronjob
+
+0 04 * * * bash /opt/pyth/crawler/cron_run.sh > output.log 2>&1
+```

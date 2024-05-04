@@ -6,21 +6,21 @@ import sys
 # from app import job
 
 # db = SQLAlchemy()
-
+logger = logging.getLogger(__name__)
 
 def _init_logger():  # Create a logger named ‘app’
-    logger = logging.getLogger("app")
+    # logger = logging.getLogger(__name__)
     # Set the threshold logging level of the logger to INFO
     logger.setLevel(logging.INFO)
     # Create a stream-based handler that writes the log entries    #into the standard output stream
     handler = logging.StreamHandler(sys.stdout)
     # Create a formatter for the logs
     formatter = logging.Formatter(
-        "%(created)f:%(levelname)s:%(name)s:%(module)s:%(message)s")
+        "%(asctime)s:%(levelname)s:%(name)s:%(module)s:%(message)s")
     # Set the created formatter as the formatter of the handler
     handler.setFormatter(formatter)
     # Add the created handler to this logger
-    # logger.addHandler(handler)
+    logger.addHandler(handler)
 
 
 def update_reviews():
@@ -51,6 +51,8 @@ def calc_rating():
     global engine
     engine = create_engine(app.config.get(
         'SQLALCHEMY_DATABASE_URI'), echo=True)
+
+    # logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
 
     _init_logger()
     with app.app_context():

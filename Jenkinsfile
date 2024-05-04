@@ -51,7 +51,9 @@ def config = [
         [from: 'weibo.py', into: '/opt/pyth/crawler'],
         [from: 'update_reviews.py', into: '/opt/pyth/crawler'],
         [from: 'update_prices.py', into: '/opt/pyth/crawler'],
-        [from: 'requirements.txt', into: '/opt/pyth/crawler']
+        [from: 'requirements.txt', into: '/opt/pyth/crawler'],
+        [from: 'build.sh', into: '/opt/pyth/crawler'],
+        [from: 'cron_run.sh', into: '/opt/pyth/crawler']
        ],
        user: 'pyth',
     ],

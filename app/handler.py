@@ -10,7 +10,7 @@ from .shihuo_handler import add_comment_for_product
 from datetime import datetime, time
 
 
-_logger = logging.getLogger("app")
+_logger = logging.getLogger(__name__)
 
 
 def get_products_from_db(engine):
