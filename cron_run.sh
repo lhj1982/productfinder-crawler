@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd /opt/pyth/crawler
+source .venv/bin/activate
 PYTHON_CMD=`which python`
 
 echo "Updating reviews..."

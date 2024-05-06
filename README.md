@@ -67,9 +67,9 @@ bash build.sh
 ```
 2. create a crontab
 ```
-crontab -e
+nano /etc/crontab
 
 add cronjob
 
-0 04 * * * bash /opt/pyth/crawler/cron_run.sh > output.log 2>&1
+0 20 * * * root bash /opt/pyth/crawler/cron_run.sh > output.log 2>&1 &
 ```

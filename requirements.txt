@@ -25,4 +25,4 @@ sqlalchemy==2.0.20
 tomli==2.0.1
 typing-extensions==4.8.0
 werkzeug==2.3.7
-flask-apscheduler==1.13.1
+requests==2.31.0
