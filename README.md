@@ -1,7 +1,14 @@
 python -m pip install pymysql
 
 ## Install dependencies
-python install -r requirements.txt
+
+```
+# install virtualenv
+python -m venv .venv
+
+# install dependencies
+pip install -r requirements.txt
+```
 
 ## Start grafana
 ```
@@ -39,13 +46,30 @@ Host is *host.docker.internal*
 
 
 ## Run
-
 ### Run review crawler
 ```
-python wsgi.py
+python update_reviews.py
 ```
-
+### Run price updates
+```
+python update_prices.py
+```
 ### Run rating update
 ```
 python rating_calc.py
+```
+
+### On EC2
+
+1. build
+```
+bash build.sh
+```
+2. create a crontab
+```
+nano /etc/crontab
+
+add cronjob
+
+0 20 * * * root bash /opt/pyth/crawler/cron_run.sh > output.log 2>&1 &
 ```
