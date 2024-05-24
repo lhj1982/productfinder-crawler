@@ -66,3 +66,14 @@ CREATE TABLE product_crawl_record
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci;
+
+create table product_schedule_record
+(
+	id BIGINT auto_increment NOT NULL,
+	product_id BIGINT NOT NULL,
+    stylecolor varchar(64) NOT NULL,
+    schedule_day varchar(64) NOT NULL,
+    CONSTRAINT product_schedule_record_PK PRIMARY KEY (id)
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
