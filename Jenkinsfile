@@ -29,7 +29,7 @@ def config = [
         DEVELOPMENT: ['^(?!main$).*$']
     ],
     build: [
-        cmd: 'python install -r requirements.txt'
+        cmd: './build.sh'
     ],
     application: [
         name      : appName,
@@ -49,8 +49,11 @@ def config = [
         [from: 'db.py', into: '/opt/pyth/crawler'],
         [from: 'rating_calc.py', into: '/opt/pyth/crawler'],
         [from: 'weibo.py', into: '/opt/pyth/crawler'],
-        [from: 'wsgi.py', into: '/opt/pyth/crawler'],
-        [from: 'requirements.txt', into: '/opt/pyth/crawler']
+        [from: 'update_reviews.py', into: '/opt/pyth/crawler'],
+        [from: 'update_prices.py', into: '/opt/pyth/crawler'],
+        [from: 'requirements.txt', into: '/opt/pyth/crawler'],
+        [from: 'build.sh', into: '/opt/pyth/crawler'],
+        [from: 'cron_run.sh', into: '/opt/pyth/crawler']
        ],
        user: 'pyth',
     ],
