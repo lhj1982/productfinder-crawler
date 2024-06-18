@@ -10,3 +10,5 @@ echo "Updating prices..."
 ${PYTHON_CMD} update_prices.py || exit 2
 echo "Updating ratings..."
 ${PYTHON_CMD} rating_calc.py || exit 3
+echo "Syncing products..."
+${PYTHON_CMD} sync_launch_product.py || exit 4
