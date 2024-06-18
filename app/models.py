@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import List
 
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer, String, DateTime, Float
+from sqlalchemy import Integer, String, DateTime, Float, Text
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase

@@ -18,3 +18,9 @@ class Config:
     SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # oscar
+    OSCAR_ISSUER = environ.get("OSCAR_ISSUER")
+    PRODUCT_FINDER_ID = environ.get("PRODUCT_FINDER_ID")
+    PRODUCT_FINDER_SECRET = environ.get("PRODUCT_FINDER_SECRET")
+    TOKEN_SCOPES = environ.get("TOKEN_SCOPES")
