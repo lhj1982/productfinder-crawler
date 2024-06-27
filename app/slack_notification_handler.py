@@ -19,7 +19,7 @@ app = Flask(__name__, instance_relative_config=False)
 app.config.from_object('config.Config')
 
 
-def slack_notification():
+def send_slack_notification():
     global engine
     engine = create_engine(app.config.get(
         'SQLALCHEMY_DATABASE_URI'), echo=True)
@@ -31,15 +31,15 @@ def slack_notification():
     }
 
     oscar_token = get_oscar_token(oscar_data)
-    slackMessage = get_upcoming_launches(oscar_token)
-    if slackMessage is not None and len(slackMessage) > 0:
-        create_blocks(slackMessage)
+    notification_objects = create_notification_objects(oscar_token)
+    if notification_objects is not None and len(notification_objects) > 0:
+        compose_message_and_send(notification_objects)
         _logger.info('Sent message to slack')
     else:
         _logger.info('No message send to slack')
 
 
-def get_upcoming_launches(oscar_token):
+def create_notification_objects(oscar_token):
     now = datetime.utcnow()
     current_hour = now.replace(minute=0, second=0, microsecond=0)
     hour_after_24 = current_hour + timedelta(hours=24)
@@ -84,14 +84,14 @@ def get_upcoming_launches(oscar_token):
     return slack_messages
 
 
-def create_blocks(slackMessage):
+def compose_message_and_send(notification_objects):
     now = datetime.utcnow()
     current_hour = now.replace(minute=0, second=0, microsecond=0)
     hour_after_24 = current_hour + timedelta(hours=24)
     start_date = current_hour.strftime('%Y-%m-%dT%H:%M:%S.000Z')
     end_date = hour_after_24.strftime('%Y-%m-%dT%H:%M:%S.000Z')
 
-    for message in slackMessage:
+    for notification_object in notification_objects:
         attachments = []
         attachment = {
             "color": "#50C878",
@@ -101,11 +101,11 @@ def create_blocks(slackMessage):
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"<https://adminops-int.prod.commerce.nikecloud.com.cn/launchadminv3/launches/list?start={start_date}&end={end_date}|{message['styleColor']}> \n *LaunchId:* {message['launchId']} \n *Name:* {message['name']}  \n *StartDate:* {message['startDate']} \n *Forecast:* {message['forecast']} \n *Tier:* {message['tier']} \n *Score:* {message['score']} {message['trend']}"
+                "text": f"<https://adminops-int.prod.commerce.nikecloud.com.cn/launchadminv3/launches/list?start={start_date}&end={end_date}|{notification_object['styleColor']}> \n *LaunchId:* {notification_object['launchId']} \n *Name:* {notification_object['name']}  \n *StartDate:* {notification_object['startDate']} \n *Forecast:* {notification_object['forecast']} \n *Tier:* {notification_object['tier']} \n *Score:* {notification_object['score']} {notification_object['trend']}"
             },
             "accessory": {
                 "type": "image",
-                "image_url": f"{message['url']}",
+                "image_url": f"{notification_object['url']}",
                 "alt_text": "Product image"
             }
         }

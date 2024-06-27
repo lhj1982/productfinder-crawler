@@ -1,3 +1,3 @@
 from app import slack_notification_handler
 
-slack_notification_handler.slack_notification()
+slack_notification_handler.send_slack_notification()
