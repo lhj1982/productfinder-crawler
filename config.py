@@ -24,3 +24,5 @@ class Config:
     PRODUCT_FINDER_ID = environ.get("PRODUCT_FINDER_ID")
     PRODUCT_FINDER_SECRET = environ.get("PRODUCT_FINDER_SECRET")
     TOKEN_SCOPES = environ.get("TOKEN_SCOPES")
+    SLACK_TOKEN = environ.get("SLACK_TOKEN")
+    SLACK_CHANNEL = environ.get("SLACK_CHANNEL")
