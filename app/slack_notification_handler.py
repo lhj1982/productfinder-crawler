@@ -64,14 +64,14 @@ def create_notification_objects(oscar_token):
                     if db_products[0].rating >= 70 and launch.get('forecastedVisitors') <= 5000:
                         trend = (":chart_with_upwards_trend:")
                 slack_message = {
-                    'styleColor': product.get('style_color'),
+                    'styleColor': db_products[0].stylecolor,
                     'launchId': launch.get('id'),
                     'name': db_products[0].name,
                     'startDate': launch.get('startEntryDate'),
                     'forecast': launch.get('forecastedVisitors'),
                     'tier': launch.get('operationalTier'),
                     'score': db_products[0].rating,
-                    'url': product.get('image_url'),
+                    'url': db_products[0].url,
                     'trend': trend
                 }
                 slack_messages.append(slack_message)

@@ -33,6 +33,7 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Float, index=False,
                                          unique=False,
                                          nullable=True)
+    url: Mapped[str] = mapped_column(Text, index=False, unique=False, nullable=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime, index=False,
                                                  unique=False,
                                                  nullable=True)
