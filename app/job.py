@@ -2,7 +2,6 @@
 import logging
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from flask_apscheduler import APScheduler
 
 _logger = logging.getLogger("app")
 
@@ -48,10 +47,3 @@ def sync_product_info(engine):
     except Exception as e:
         _logger.error('Error when syncing product information , error: %s', e)
 
-
-def register_jobs(app, engine):
-    scheduler = APScheduler()
-    scheduler.add_job(id='sync_product_info', func=lambda: sync_product_info(engine), trigger='cron', hour=16,
-                      minute=35, timezone='Asia/Shanghai')
-    scheduler.init_app(app)
-    scheduler.start()

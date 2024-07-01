@@ -5,8 +5,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from .models import Product
 from .models import ProductCrawlRecord
+from .token_client import get_oscar_token
 from .weibo_handler import get_product_reviews
 from .shihuo_handler import add_comment_for_product
+from .sync_launch_handler import insert_launches
 from datetime import datetime, time
 
 
@@ -176,3 +178,8 @@ def update_prices(engine):
             session.commit()
     except Exception as e:
         _logger.error('Error when syncing product information , error: %s', e)
+
+
+def sync_launch_products(engine, oscar_data):
+    oscar_token = get_oscar_token(oscar_data)
+    insert_launches(engine, oscar_token)

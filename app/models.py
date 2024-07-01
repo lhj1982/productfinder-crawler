@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import List
 
 from sqlalchemy import ForeignKey
-from sqlalchemy import Integer, String, DateTime, Float
+from sqlalchemy import Integer, String, DateTime, Float, Text
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import DeclarativeBase
@@ -33,6 +33,7 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Float, index=False,
                                          unique=False,
                                          nullable=True)
+    url: Mapped[str] = mapped_column(Text, index=False, unique=False, nullable=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime, index=False,
                                                  unique=False,
                                                  nullable=True)

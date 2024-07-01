@@ -33,7 +33,6 @@ def update_reviews():
         'SQLALCHEMY_DATABASE_URI'), echo=True)
 
     _init_logger()
-    # job.register_jobs(app, engine)
     # logging.basicConfig(format="%(levelname)s | %(asctime)s | %(message)s")
     with app.app_context():
         from . import handler
@@ -75,4 +74,25 @@ def update_prices():
     with app.app_context():
         from . import handler
         handler.update_prices(engine)
+        return app
+
+
+def sync_launch_product():
+    app = Flask(__name__, instance_relative_config=False)
+    app.config.from_object('config.Config')
+
+    global engine
+    engine = create_engine(app.config.get(
+        'SQLALCHEMY_DATABASE_URI'), echo=True)
+    oscar_data = {
+        'oscar_issuer': app.config.get('OSCAR_ISSUER'),
+        'client_id': app.config.get('PRODUCT_FINDER_ID'),
+        'client_secret': app.config.get('PRODUCT_FINDER_SECRET'),
+        'scopes': app.config.get('TOKEN_SCOPES')
+    }
+
+    _init_logger()
+    with app.app_context():
+        from . import handler
+        handler.sync_launch_products(engine, oscar_data)
         return app
