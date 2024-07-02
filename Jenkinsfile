@@ -53,7 +53,9 @@ def config = [
         [from: 'update_prices.py', into: '/opt/pyth/crawler'],
         [from: 'requirements.txt', into: '/opt/pyth/crawler'],
         [from: 'build.sh', into: '/opt/pyth/crawler'],
-        [from: 'cron_run.sh', into: '/opt/pyth/crawler']
+        [from: 'cron_run.sh', into: '/opt/pyth/crawler'],
+        [from: 'sync_launch_product.py', into: '/opt/pyth/crawler'],
+        [from: 'send_slack_notification.py', into: '/opt/pyth/crawler']
        ],
        user: 'pyth',
     ],
