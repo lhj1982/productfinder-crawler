@@ -740,7 +740,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(pis.start_date), '%Y-%m-%d %H:%i:%s') as start_date, pis.entries, pis.valid_entries, pis.funded, pis.completed, pis.reserved \nFROM products as p \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nORDER BY pis.start_date DESC\nLIMIT 50 ",
+          "rawSql": "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(pis.start_date), '%Y-%m-%d %H:%i:%s') as start_date, pis.entries, pis.valid_entries, pis.winners, pis.reserved \nFROM products as p \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nORDER BY pis.start_date DESC\nLIMIT 50 ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -1203,8 +1203,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1340,8 +1339,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1915,7 +1913,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1935,7 +1933,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1982,6 +1980,6 @@
   "timezone": "",
   "title": "Product Catalog Insights",
   "uid": "abab9674-38c1-4296-9ad3-962231e87dde",
-  "version": 6,
+  "version": 7,
   "weekStart": ""
 }
