@@ -1,0 +1,127 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  create securityGroup,alb,targetGroup,recordSet for launch-product-catalog-insights-frontend
+Metadata:
+  Stackname: 'launch-product-catalog-insights-frontend-network-resources'
+Parameters:
+  Env:
+    Type: String
+    Default: chinatest
+    AllowedValues:
+      - chinatest
+      - chinaprod
+    Description: Enter the environment name where these resources will be created.
+Mappings:
+  Accounts:
+    '734176943427': #cn test
+      VpcId: 'vpc-069713cbc0909398d'
+      Subnets:
+        - 'subnet-07d67d2fece2fc924'
+        - 'subnet-007a1668acd7fae3d'
+        - 'subnet-019e18543b275403c'
+      HostedZoneId: 'Z0594157S8Z4M4LZUQWT'
+      DomainName: 'launch-product-catalog-insights.test.commerce.nikecloud.com.cn'
+    '734147128161': #cn prod
+      VpcId: 'vpc-0dc56a411c6fac77e'
+      Subnets:
+        - 'subnet-03d9acc026aca0cbc'
+        - 'subnet-053b6063b97b7c679'
+        - 'subnet-044f23d70152bb92a'
+      HostedZoneId: 'Z05762473D4W5VFZZ9EPM'
+      DomainName: 'launch-product-catalog-insights.prod.commerce.nikecloud.com.cn'
+  ResourceTagMap:
+    NikeStandardTags:
+      "application": "product-catalog-insights-frontend"
+      "department": "platform engineering - launch"
+      "domain": "launch execution"
+      "owner": "frank.zhao@nike.com"
+      "distributionlist": "Lst-digitaltech.LaunchServices@nike.com"
+
+Resources:
+  LaunchProductCatalogInsightsFrontendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: product-catalog-insights-sg
+      GroupDescription: Security group for launch-product-catalog-insights-frontend loadbalancer
+      VpcId: !FindInMap [ Accounts, !Ref 'AWS::AccountId', VpcId ]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: "nike-application"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, application ]
+        - Key: "nike-department"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, department ]
+        - Key: "nike-domain"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, domain ]
+        - Key: "nike-environment"
+          Value: !Ref Env
+        - Key: "nike-owner"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, owner ]
+        - Key: "nike-distributionlist"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, distributionlist ]
+  LaunchProductCatalogInsightsFrontendALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: product-catalog-insights-lb
+      Scheme: internal
+      SecurityGroups:
+        - !Ref LaunchProductCatalogInsightsFrontendSecurityGroup
+      Subnets: !FindInMap [ Accounts, !Ref 'AWS::AccountId', Subnets ]
+      Type: application
+      Tags:
+        - Key: "nike-application"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, application ]
+        - Key: "nike-department"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, department ]
+        - Key: "nike-domain"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, domain ]
+        - Key: "nike-environment"
+          Value: !Ref Env
+        - Key: "nike-owner"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, owner ]
+        - Key: "nike-distributionlist"
+          Value: !FindInMap [ ResourceTagMap, NikeStandardTags, distributionlist ]
+  LaunchProductCatalogInsightsFrontendALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckPort: 3000
+      HealthCheckPath: /
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
+      Port: 80
+      Protocol: HTTP
+      VpcId: !FindInMap [ Accounts, !Ref 'AWS::AccountId', VpcId ]
+  LaunchProductCatalogInsightsFrontendACMCertificate:
+    Type: 'AWS::CertificateManager::Certificate'
+    Properties:
+      DomainName: !FindInMap [ Accounts, !Ref 'AWS::AccountId', DomainName ]
+      ValidationMethod: DNS
+  LaunchProductCatalogInsightsFrontendALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LaunchProductCatalogInsightsFrontendALB
+      Port: 443
+      Protocol: HTTPS
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref LaunchProductCatalogInsightsFrontendALBTargetGroup
+      Certificates:
+        - CertificateArn: !Ref LaunchProductCatalogInsightsFrontendACMCertificate
+  LaunchProductCatalogInsightsFrontendDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !FindInMap [ Accounts, !Ref 'AWS::AccountId', HostedZoneId ]
+      Name: !FindInMap [ Accounts, !Ref 'AWS::AccountId', DomainName ]
+      Type: A
+      AliasTarget:
+        HostedZoneId: !GetAtt LaunchProductCatalogInsightsFrontendALB.CanonicalHostedZoneID
+        DNSName: !GetAtt LaunchProductCatalogInsightsFrontendALB.DNSName

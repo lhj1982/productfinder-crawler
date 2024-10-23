@@ -85,7 +85,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupName: product-catalog-insights-frontend
-      GroupDescription: product-catalog-insights-frontend
+      GroupDescription: product-catalog-insights-frontend for ec2 instance
       SecurityGroupEgress: 
         - CidrIp: 0.0.0.0/0
           IpProtocol: -1
