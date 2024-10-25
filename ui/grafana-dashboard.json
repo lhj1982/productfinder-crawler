@@ -34,13 +34,13 @@
       "type": "panel",
       "id": "dalvany-image-panel",
       "name": "Dynamic image panel",
-      "version": "3.0.0"
+      "version": "4.0.0"
     },
     {
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "10.4.1"
+      "version": "11.0.0"
     },
     {
       "type": "datasource",
@@ -111,10 +111,11 @@
       "id": 14,
       "options": {
         "alt_field": "",
+        "autofit": false,
         "height": "75",
         "icon_field": "",
         "open_url": {
-          "base_url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=",
+          "base_url": "d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=",
           "enable": true,
           "metric_field": "stylecolor",
           "open_in_tab": true,
@@ -375,7 +376,7 @@
                   {
                     "targetBlank": true,
                     "title": "Show Details",
-                    "url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
+                    "url": "/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
                   }
                 ]
               }
@@ -428,7 +429,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -591,7 +592,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -722,6 +723,7 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
@@ -740,7 +742,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(pis.start_date), '%Y-%m-%d %H:%i:%s') as start_date, pis.entries, pis.valid_entries, pis.funded, pis.completed, pis.reserved \nFROM products as p \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nORDER BY pis.start_date DESC\nLIMIT 50 ",
+          "rawSql": "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(pis.start_date), '%Y-%m-%d %H:%i:%s') as start_date, pis.entries, pis.valid_entries, pis.winners, pis.reserved \nFROM products as p \nLEFT JOIN product_internal_sales as pis ON p.stylecolor=pis.stylecolor\nWHERE p.stylecolor like \"%${stylecolor}%\" \nGROUP BY pis.launch_id\nORDER BY pis.start_date DESC\nLIMIT 50 ",
           "refId": "A",
           "sql": {
             "columns": [
@@ -863,7 +865,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "product_catalog",
@@ -1003,7 +1005,7 @@
                   {
                     "targetBlank": true,
                     "title": "Show Details",
-                    "url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
+                    "url": "/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
                   }
                 ]
               }
@@ -1031,7 +1033,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "product_catalog",
@@ -1141,6 +1143,7 @@
           "showLegend": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -1203,8 +1206,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1254,7 +1256,7 @@
                   {
                     "targetBlank": true,
                     "title": "Show details",
-                    "url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name=\n\n"
+                    "url": "/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
                   }
                 ]
               }
@@ -1282,7 +1284,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -1340,8 +1342,7 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "orange",
@@ -1391,7 +1392,7 @@
                   {
                     "targetBlank": true,
                     "title": "Show details",
-                    "url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name=\n\n"
+                    "url": "/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
                   }
                 ]
               }
@@ -1419,7 +1420,7 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "10.4.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -1498,6 +1499,7 @@
           "values": true
         },
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         }
@@ -1607,6 +1609,7 @@
         "showValue": "auto",
         "stacking": "none",
         "tooltip": {
+          "maxHeight": 600,
           "mode": "single",
           "sort": "none"
         },
@@ -1679,8 +1682,7 @@
                 "value": 80
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": [
           {
@@ -1719,7 +1721,7 @@
                   {
                     "targetBlank": true,
                     "title": "Show details",
-                    "url": "http://69.234.228.45:3000/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name=\n\n"
+                    "url": "/d/abab9674-38c1-4296-9ad3-962231e87dde/product-catalog-insights?orgId=1&var-stylecolor=$__value&var-name="
                   }
                 ]
               }
@@ -1752,7 +1754,7 @@
           }
         ]
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -1810,8 +1812,7 @@
                 "value": 3000
               }
             ]
-          },
-          "unitScale": true
+          }
         },
         "overrides": []
       },
@@ -1840,7 +1841,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "10.3.1",
+      "pluginVersion": "11.0.0",
       "targets": [
         {
           "dataset": "launch",
@@ -1915,7 +1916,7 @@
     "list": [
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1935,7 +1936,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "",
           "value": ""
         },
@@ -1978,10 +1979,11 @@
     "from": "now-30d",
     "to": "now"
   },
+  "timeRangeUpdatedDuringEditOrView": false,
   "timepicker": {},
   "timezone": "",
   "title": "Product Catalog Insights",
   "uid": "abab9674-38c1-4296-9ad3-962231e87dde",
-  "version": 6,
+  "version": 5,
   "weekStart": ""
 }
